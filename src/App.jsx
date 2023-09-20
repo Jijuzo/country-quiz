@@ -1,8 +1,9 @@
-import { QuestionPage } from "./QuestionCard";
+import { QuestionCard } from "./QuestionCard";
 import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { Footer } from "./Footer";
 import { QuizResults } from "./QuizResults";
+import { DotSpinner } from "@uiball/loaders";
 
 const baseUrl = "https://restcountries.com";
 const CAPITAL_QUESTION_TYPE = 0;
@@ -12,10 +13,10 @@ export const App = () => {
   const [questionType, setQuestionType] = useState(null);
   const [correctAnswerIndex, setCorrectAnswerIndex] = useState(null);
   const [isQuizEnded, setIsQuizEnded] = useState(false);
-  const [pageError, setPageError] = useState(null);
   const [quizScore, setQuizScore] = useState(0);
   const [countryAnswerChoices, setCountryAnswerChoices] = useState();
   const [rightCountry, setRightCountry] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getRandomCountry = (countries) => {
     const randomIndex = Math.floor(Math.random() * countries.length);
@@ -49,7 +50,7 @@ export const App = () => {
   };
 
   const fetchQuestionData = async () => {
-    setPageError(null);
+    setIsLoading(true);
     setQuestionType(getQuestionType(CAPITAL_QUESTION_TYPE, FLAG_QUESTION_TYPE));
     const questionDataUrl = new URL(
       "/v3.1/all?fields=name,capital,flags",
@@ -73,7 +74,8 @@ export const App = () => {
       getThreeRandomCountries(result, countryData.name.common);
     } catch (error) {
       console.error("Error:", error);
-      setPageError("smthWrong");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -92,32 +94,38 @@ export const App = () => {
 
   return (
     <main className="page">
-      <div className="card-div">
-        <h1 className="card-header">country quiz</h1>
-        <div className="card">
-          {rightCountry && !isQuizEnded && (
-            <QuestionPage
-              rightCountry={rightCountry}
-              countryAnswerChoices={countryAnswerChoices}
-              fetchQuestionData={fetchQuestionData}
-              questionType={questionType}
-              correctAnswerIndex={correctAnswerIndex}
-              quizScore={quizScore}
-              onCorrectAnswer={setQuizScore}
-              isQuizEnded={isQuizEnded}
-              onIncorrectAnswer={setIsQuizEnded}
-            />
-          )}
-          {isQuizEnded && (
-            <QuizResults
-              setIsQuizEnded={setIsQuizEnded}
-              fetchQuestionData={fetchQuestionData}
-              quizScore={quizScore}
-              setQuizScore={setQuizScore}
-            />
-          )}
+      {isLoading ? (
+        <div className="spinner-container">
+          <DotSpinner size={100} speed={0.9} color="black" />
         </div>
-      </div>
+      ) : (
+        <div className="card-div">
+          <h1 className="card-header">country quiz</h1>
+          <div className="card">
+            {rightCountry && !isQuizEnded && (
+              <QuestionCard
+                rightCountry={rightCountry}
+                countryAnswerChoices={countryAnswerChoices}
+                fetchQuestionData={fetchQuestionData}
+                questionType={questionType}
+                correctAnswerIndex={correctAnswerIndex}
+                quizScore={quizScore}
+                onCorrectAnswer={setQuizScore}
+                isQuizEnded={isQuizEnded}
+                onIncorrectAnswer={setIsQuizEnded}
+              />
+            )}
+            {isQuizEnded && (
+              <QuizResults
+                setIsQuizEnded={setIsQuizEnded}
+                fetchQuestionData={fetchQuestionData}
+                quizScore={quizScore}
+                setQuizScore={setQuizScore}
+              />
+            )}
+          </div>
+        </div>
+      )}
       <Footer />
     </main>
   );
