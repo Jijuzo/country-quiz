@@ -1,10 +1,9 @@
+import { Answer } from "./Answer";
 /* eslint-disable react/prop-types */
 import cardIconSvg from "./assets/undraw_adventure_4hum_1.svg";
 import { useState } from "react";
 
-const prefixes = ["A", "B", "C", "D"];
-
-export function QuestionPage({
+export function QuestionCard({
   rightCountry,
   countryAnswerChoices,
   fetchQuestionData,
@@ -56,25 +55,15 @@ export function QuestionPage({
         <ul className="answers-ul">
           {countryAnswerChoices.map((answer, index) => {
             return (
-              <li className="answer-li" key={index}>
-                <button
-                  className={`${
-                    selectedAnswerIndexes.includes(index)
-                      ? index === correctAnswerIndex
-                        ? "correct-answer"
-                        : "incorrect-answer"
-                      : ""
-                  } ${answer.length > 30 ? "long-answer" : ""} answer-button`}
-                  onClick={() => handleAnswerClick(index)}
-                  style={{
-                    cursor: answered ? "not-allowed" : "pointer",
-                  }}
-                  value={answer}
-                >
-                  <span className="answer-span">{prefixes[index]}</span>{" "}
-                  {answer}
-                </button>
-              </li>
+              <Answer
+                key={index}
+                answer={answer}
+                index={index}
+                selectedAnswerIndexes={selectedAnswerIndexes}
+                correctAnswerIndex={correctAnswerIndex}
+                answered={answered}
+                handleAnswerClick={handleAnswerClick}
+              />
             );
           })}
         </ul>
