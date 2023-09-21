@@ -53,3 +53,15 @@
 .answer-span {
   margin-right: 40px;
 }
+
+@media (max-width: 400px) {
+  @media (max-height: 700px) {
+    .answer-li {
+      height: 50px;
+    }
+
+    .answer-li:not(:first-child) {
+      margin-top: 10px;
+    }
+  }
+}

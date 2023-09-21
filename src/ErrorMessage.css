@@ -1,4 +1,4 @@
-.error-alert {
+.error-message {
   position: absolute;
   bottom: 0px;
   font-family: var(--font-family-default);
@@ -9,4 +9,11 @@
   border-radius: 4px;
   color: var(--color-white);
   background-color: var(--color-red);
+}
+
+@media (max-width: 500px) {
+  .error-message {
+    font-size: 14px;
+    margin: 35px 0px;
+  }
 }
