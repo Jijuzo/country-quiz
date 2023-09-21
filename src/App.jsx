@@ -4,12 +4,14 @@ import { createRoot } from "react-dom/client";
 import { Footer } from "./Footer";
 import { QuizResults } from "./QuizResults";
 import { DotSpinner } from "@uiball/loaders";
+import { ErrorMessage } from "./ErrorMessage";
 
 const baseUrl = "https://restcountries.com";
 const CAPITAL_QUESTION_TYPE = 0;
 const FLAG_QUESTION_TYPE = 1;
 
 export const App = () => {
+  const [error, setError] = useState(null);
   const [questionType, setQuestionType] = useState(null);
   const [correctAnswerIndex, setCorrectAnswerIndex] = useState(null);
   const [isQuizEnded, setIsQuizEnded] = useState(false);
@@ -50,6 +52,7 @@ export const App = () => {
   };
 
   const fetchQuestionData = async () => {
+    setError(null);
     setIsLoading(true);
     setQuestionType(getQuestionType(CAPITAL_QUESTION_TYPE, FLAG_QUESTION_TYPE));
     const questionDataUrl = new URL(
@@ -74,6 +77,7 @@ export const App = () => {
       getThreeRandomCountries(result, countryData.name.common);
     } catch (error) {
       console.error("Error:", error);
+      setError(error);
     } finally {
       setIsLoading(false);
     }
@@ -101,7 +105,7 @@ export const App = () => {
       ) : (
         <div className="card-div">
           <h1 className="card-header">country quiz</h1>
-          <div className="card">
+          <form className="card">
             {rightCountry && !isQuizEnded && (
               <QuestionCard
                 rightCountry={rightCountry}
@@ -123,9 +127,10 @@ export const App = () => {
                 setQuizScore={setQuizScore}
               />
             )}
-          </div>
+          </form>
         </div>
       )}
+      <ErrorMessage error={error} />
       <Footer />
     </main>
   );
