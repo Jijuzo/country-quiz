@@ -1,5 +1,5 @@
 import { QuestionCard } from "./QuestionCard";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { createRoot } from "react-dom/client";
 import { Footer } from "./Footer";
 import { QuizResults } from "./QuizResults";
@@ -30,28 +30,27 @@ export const App = () => {
     return randomNumber;
   };
 
-  const getThreeRandomCountries = (countries, rightCountryName) => {
+  const getThreeRandomCountries = useCallback((countries, rightCountryName) => {
     const countriesArray = [];
     for (let i = 0; i < 3; i++) {
-      const { name } = getRandomCountry(countries);
-      if (countriesArray.includes(name.common)) {
-        const { name } = getRandomCountry(countries);
-        countriesArray.push(name.common);
-      } else if (name.common === rightCountryName) {
-        const { name } = getRandomCountry(countries);
-        countriesArray.push(name.common);
-      } else {
-        countriesArray.push(name.common);
-      }
+      let countryName;
+      do {
+        countryName = getRandomCountry(countries).name.common;
+      } while (
+        countriesArray.includes(countryName) ||
+        countryName === rightCountryName
+      );
+
+      countriesArray.push(countryName);
     }
     const randomIndex = Math.floor(Math.random() * (countriesArray.length + 1));
     setCorrectAnswerIndex(randomIndex);
     const newCountriesArray = [...countriesArray];
     newCountriesArray.splice(randomIndex, 0, rightCountryName);
     setCountryAnswerChoices(newCountriesArray);
-  };
+  }, []);
 
-  const fetchQuestionData = async () => {
+  const fetchQuestionData = useCallback(async () => {
     setError(null);
     setIsLoading(true);
     setQuestionType(getQuestionType(CAPITAL_QUESTION_TYPE, FLAG_QUESTION_TYPE));
@@ -81,12 +80,12 @@ export const App = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [getThreeRandomCountries]);
 
   useEffect(() => {
     if (rightCountry) return;
     fetchQuestionData();
-  }, [rightCountry]);
+  }, [fetchQuestionData, rightCountry]);
 
   return (
     <main className="page">
