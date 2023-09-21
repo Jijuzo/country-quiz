@@ -1,4 +1,6 @@
 /* eslint-disable react/prop-types */
+import "./Answer.css";
+
 const prefixes = ["A", "B", "C", "D"];
 
 export function Answer({
@@ -19,7 +21,7 @@ export function Answer({
               : "incorrect-answer"
             : ""
         } ${answer.length > 30 ? "long-answer" : ""} answer-button`}
-        onClick={() => handleAnswerClick(index)}
+        onClick={(e) => handleAnswerClick(e, index)}
         style={{
           cursor: answered ? "not-allowed" : "pointer",
         }}
