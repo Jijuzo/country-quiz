@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import cardWinnerIconSvg from "./assets/undraw_winners_ao2o_2.svg";
+import "./QuizResults.css";
 
 export function QuizResults({
   setIsQuizEnded,
@@ -21,7 +22,7 @@ export function QuizResults({
       </p>
       <button
         className="try-again-button"
-        onClick={() => {
+        onSubmit={() => {
           setIsQuizEnded(false);
           fetchQuestionData();
           setQuizScore(0);
