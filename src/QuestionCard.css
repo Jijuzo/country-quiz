@@ -1,0 +1,43 @@
+.card-icon {
+  position: absolute;
+  top: -75px;
+  right: 0;
+}
+
+.question-div {
+  padding: 70px 32px 32px 32px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.question-content {
+  color: var(--color-dark-blue);
+  font-family: var(--font-family-default);
+  font-size: var(--font-size-question);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: 0;
+}
+
+.answers-ul {
+  list-style: none;
+  padding: 0px 30px;
+  margin: 0;
+}
+
+.next-button {
+  width: 115px;
+  height: 55px;
+  margin: 25px 30px 0px 313px;
+  border-radius: 12px;
+  border-color: transparent;
+  background-color: var(--color-orange);
+  color: var(--color-white);
+  font-family: var(--font-family-default);
+  font-size: var(--font-size-next-button);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+}
+
+.next-button:active {
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+}

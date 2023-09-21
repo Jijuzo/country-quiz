@@ -1,7 +1,9 @@
-import { Answer } from "./Answer";
 /* eslint-disable react/prop-types */
+import { QuestionImage } from "./QuestionImage";
+import { Answer } from "./Answer";
 import cardIconSvg from "./assets/undraw_adventure_4hum_1.svg";
 import { useState } from "react";
+import "./QuestionCard.css";
 
 export function QuestionCard({
   rightCountry,
@@ -18,7 +20,8 @@ export function QuestionCard({
   const [answered, setAnswered] = useState(false);
   const [incorrectAnswer, setIncorrectAnswer] = useState(false);
 
-  const handleAnswerClick = (index) => {
+  const handleAnswerClick = (e, index) => {
+    e.preventDefault();
     if (answered) return;
     if (!selectedAnswerIndexes.includes(index)) {
       setSelectedAnswerIndexes([index, correctAnswerIndex]);
@@ -31,20 +34,22 @@ export function QuestionCard({
     setAnswered(true);
   };
 
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    if (incorrectAnswer) {
+      onIncorrectAnswer(true);
+    } else if (!isQuizEnded) {
+      fetchQuestionData();
+      setAnswered(false);
+      setSelectedAnswerIndexes([]);
+    }
+  };
+
   return (
     <div>
       <img className="card-icon" src={cardIconSvg} alt="player icon" />
       <div className="question-div">
-        {questionType ? (
-          <img
-            className="question-flag"
-            src={`${rightCountry.flags.png}`}
-            width="84px"
-            height="54px"
-            alt="country flag"
-          />
-        ) : null}
-
+        {questionType ? <QuestionImage rightCountry={rightCountry} /> : null}
         <p className="question-content">
           {questionType
             ? "Which country does this flag belong to?"
@@ -71,15 +76,8 @@ export function QuestionCard({
       {answered && (
         <button
           className="next-button"
-          onClick={() => {
-            if (incorrectAnswer) {
-              onIncorrectAnswer(true);
-            } else if (!isQuizEnded) {
-              fetchQuestionData();
-              setAnswered(false);
-              setSelectedAnswerIndexes([]);
-            }
-          }}
+          type="submit"
+          onClick={(e) => handleFormSubmit(e)}
         >
           {" "}
           {incorrectAnswer ? "Results" : "Next"}
