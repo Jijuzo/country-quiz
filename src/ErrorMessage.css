@@ -13,7 +13,7 @@
 
 @media (max-width: 500px) {
   .error-message {
-    font-size: 14px;
+    font-size: var(--font-size-error-message-max-width-500px);
     margin: 35px 0px;
   }
 }

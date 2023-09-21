@@ -45,8 +45,6 @@
 @media (max-width: 500px) {
   .question-div {
     padding: 30px 20px 20px 20px;
-    display: flex;
-    flex-wrap: wrap;
   }
   .next-button {
     margin-left: 253px;
@@ -55,9 +53,7 @@
 
 @media (max-width: 400px) {
   .card-icon {
-    position: absolute;
     top: -65px;
-    right: 0;
   }
   .next-button {
     margin-left: 203px;
