@@ -88,14 +88,6 @@ export const App = () => {
     fetchQuestionData();
   }, [rightCountry]);
 
-  console.log(
-    "render",
-    rightCountry,
-    countryAnswerChoices,
-    questionType,
-    quizScore
-  );
-
   return (
     <main className="page">
       {isLoading ? (
