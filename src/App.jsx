@@ -11,6 +11,8 @@ const CAPITAL_QUESTION_TYPE = 0;
 const FLAG_QUESTION_TYPE = 1;
 
 export const App = () => {
+  const [isFetchCalledOnce, setIsFetchCalledOnce] = useState(false);
+  const [allCountriesData, setAllCountriesData] = useState(null);
   const [error, setError] = useState(null);
   const [questionType, setQuestionType] = useState(null);
   const [correctAnswerIndex, setCorrectAnswerIndex] = useState(null);
@@ -40,7 +42,6 @@ export const App = () => {
         countriesArray.includes(countryName) ||
         countryName === rightCountryName
       );
-
       countriesArray.push(countryName);
     }
     const randomIndex = Math.floor(Math.random() * (countriesArray.length + 1));
@@ -59,12 +60,27 @@ export const App = () => {
       baseUrl
     );
     try {
-      const promise = await fetch(questionDataUrl);
-      if (!promise.ok) {
-        throw new Error(`HTTP error! Status: ${promise.status}`);
+      if (!isFetchCalledOnce) {
+        const promise = await fetch(questionDataUrl);
+        if (!promise.ok) {
+          throw new Error(`HTTP error! Status: ${promise.status}`);
+        }
+        const result = await promise.json();
+        setAllCountriesData(result);
+        setQuestionData(result);
+        setIsFetchCalledOnce(true);
+      } else {
+        setQuestionData(allCountriesData);
       }
-      const result = await promise.json();
-      const countryData = getRandomCountry(result);
+    } catch (error) {
+      console.error("Error:", error);
+      setError(error);
+    } finally {
+      setIsLoading(false);
+    }
+
+    function setQuestionData(allCountriesData) {
+      const countryData = getRandomCountry(allCountriesData);
       if (
         countryData.capital === undefined ||
         countryData.name.common === undefined ||
@@ -73,14 +89,9 @@ export const App = () => {
         fetchQuestionData();
       }
       setRightCountry(countryData);
-      getThreeRandomCountries(result, countryData.name.common);
-    } catch (error) {
-      console.error("Error:", error);
-      setError(error);
-    } finally {
-      setIsLoading(false);
+      getThreeRandomCountries(allCountriesData, countryData.name.common);
     }
-  }, [getThreeRandomCountries]);
+  }, [allCountriesData, getThreeRandomCountries, isFetchCalledOnce]);
 
   useEffect(() => {
     if (rightCountry) return;
