@@ -7,14 +7,14 @@ import "./QuestionCard.css";
 
 export function QuestionCard({
   rightCountry,
-  countryAnswerChoices,
-  fetchQuestionData,
+  answerChoices,
   questionType,
-  correctAnswerIndex,
   quizScore,
   onCorrectAnswer,
-  isQuizEnded,
   onIncorrectAnswer,
+  isQuizEnded,
+  allCountriesData,
+  setNextQuestion,
 }) {
   const [selectedAnswerIndexes, setSelectedAnswerIndexes] = useState([]);
   const [answered, setAnswered] = useState(false);
@@ -24,9 +24,9 @@ export function QuestionCard({
     e.preventDefault();
     if (answered) return;
     if (!selectedAnswerIndexes.includes(index)) {
-      setSelectedAnswerIndexes([index, correctAnswerIndex]);
+      setSelectedAnswerIndexes([index, answerChoices.indexOf(rightCountry)]);
     }
-    if (index === correctAnswerIndex) {
+    if (index === answerChoices.indexOf(rightCountry)) {
       onCorrectAnswer(quizScore + 1);
     } else {
       setIncorrectAnswer(true);
@@ -39,7 +39,7 @@ export function QuestionCard({
     if (incorrectAnswer) {
       onIncorrectAnswer(true);
     } else if (!isQuizEnded) {
-      fetchQuestionData();
+      setNextQuestion(allCountriesData);
       setAnswered(false);
       setSelectedAnswerIndexes([]);
     }
@@ -58,14 +58,14 @@ export function QuestionCard({
       </div>
       <div className="answers-div">
         <ul className="answers-ul">
-          {countryAnswerChoices.map((answer, index) => {
+          {answerChoices.map((answer, index) => {
             return (
               <Answer
                 key={index}
-                answer={answer}
+                answer={answer.name.common}
                 index={index}
                 selectedAnswerIndexes={selectedAnswerIndexes}
-                correctAnswerIndex={correctAnswerIndex}
+                correctAnswerIndex={answerChoices.indexOf(rightCountry)}
                 answered={answered}
                 handleAnswerClick={handleAnswerClick}
               />
