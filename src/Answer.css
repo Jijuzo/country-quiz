@@ -50,6 +50,14 @@
   background-color: var(--color-red);
 }
 
+.cursor-before-answer {
+  cursor: pointer;
+}
+
+.cursor-after-answer {
+  cursor: not-allowed;
+}
+
 .answer-span {
   margin-right: 40px;
 }
