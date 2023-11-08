@@ -4,9 +4,10 @@ import "./QuizResults.css";
 
 export function QuizResults({
   setIsQuizEnded,
-  fetchQuestionData,
+  onTryAgain,
   quizScore,
   setQuizScore,
+  allCountriesData,
 }) {
   return (
     <div className="quiz-results-div">
@@ -24,7 +25,7 @@ export function QuizResults({
         className="try-again-button"
         onSubmit={() => {
           setIsQuizEnded(false);
-          fetchQuestionData();
+          onTryAgain(allCountriesData);
           setQuizScore(0);
         }}
       >
