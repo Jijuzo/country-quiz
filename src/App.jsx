@@ -1,5 +1,5 @@
 import { QuestionCard } from "./QuestionCard";
-import { useEffect, useState, useCallback, useReducer } from "react";
+import { useEffect, useState, useReducer } from "react";
 import { createRoot } from "react-dom/client";
 import { Footer } from "./Footer";
 import { QuizResults } from "./QuizResults";
@@ -38,60 +38,66 @@ const getQuestionType = (min, max) => {
   return randomNumber;
 };
 
+const getQuestionData = (allCountriesData) => {
+  const countriesArray = [];
+  for (let i = 0; i < 4; i++) {
+    let countryData;
+    do {
+      countryData = getRandomCountry(allCountriesData);
+    } while (
+      countriesArray.includes(countryData) ||
+      countryData.capital[0] === undefined ||
+      countryData.name.common === undefined ||
+      countryData.flags.png === undefined
+    );
+    countriesArray.push(countryData);
+  }
+  return countriesArray;
+};
+
 export const App = () => {
   const [allCountriesData, setAllCountriesData] = useState(null);
-  const [questionType, setQuestionType] = useState(null);
   const [isQuizEnded, setIsQuizEnded] = useState(false);
   const [quizScore, setQuizScore] = useState(0);
   const [answerChoices, setAnswerChoices] = useState();
   const [rightCountry, setRightCountry] = useState(null);
+  const [questionType, setQuestionType] = useState(
+    getQuestionType(CAPITAL_QUESTION_TYPE, FLAG_QUESTION_TYPE)
+  );
   const [state, dispatch] = useReducer(reducer, {
     error: null,
     isLoading: false,
   });
 
-  const fetchQuestionData = useCallback(async () => {
-    dispatch({ type: "loader" });
-    setQuestionType(getQuestionType(CAPITAL_QUESTION_TYPE, FLAG_QUESTION_TYPE));
-    try {
-      const promise = await fetch(QUESTION_DATA_URL);
-      if (!promise.ok) {
-        throw new Error(`HTTP error! Status: ${promise.status}`);
-      }
-      const result = await promise.json();
-      setAllCountriesData(result);
-      setQuestionData(result);
-    } catch (error) {
-      console.error("Error:", error);
-      dispatch({ type: "error", payload: error });
-    } finally {
-      dispatch({ type: "noLoader" });
-    }
-  }, []);
-
   const setQuestionData = (allCountriesData) => {
+    const answerChoices = getQuestionData(allCountriesData);
     setQuestionType(getQuestionType(CAPITAL_QUESTION_TYPE, FLAG_QUESTION_TYPE));
-    const countriesArray = [];
-    for (let i = 0; i < 4; i++) {
-      let countryData;
-      do {
-        countryData = getRandomCountry(allCountriesData);
-      } while (
-        countriesArray.includes(countryData) ||
-        countryData.capital[0] === undefined ||
-        countryData.name.common === undefined ||
-        countryData.flags.png === undefined
-      );
-      countriesArray.push(countryData);
-    }
-    setRightCountry(countriesArray[getRandomIndex(countriesArray)]);
-    setAnswerChoices(countriesArray);
+    setRightCountry(answerChoices[getRandomIndex(answerChoices)]);
+    setAnswerChoices(answerChoices);
   };
 
   useEffect(() => {
     if (rightCountry) return;
+    const fetchQuestionData = async () => {
+      dispatch({ type: "loader" });
+      try {
+        const promise = await fetch(QUESTION_DATA_URL);
+        if (!promise.ok) {
+          throw new Error(`HTTP error! Status: ${promise.status}`);
+        }
+        const result = await promise.json();
+        setAllCountriesData(result);
+        setQuestionData(result);
+      } catch (error) {
+        console.error("Error:", error);
+        dispatch({ type: "error", payload: error });
+      } finally {
+        dispatch({ type: "noLoader" });
+      }
+    };
+
     fetchQuestionData();
-  }, [fetchQuestionData, rightCountry]);
+  }, [rightCountry]);
 
   console.log("addsaadw", rightCountry);
 
