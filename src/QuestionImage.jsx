@@ -6,6 +6,7 @@ export function QuestionImage({ rightCountry }) {
       src={`${rightCountry.flags.png}`}
       width="84px"
       height="54px"
+      style={{ border: "1px solid black" }}
       alt="country flag"
     />
   );
