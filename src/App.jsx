@@ -70,6 +70,7 @@ export const App = () => {
   }, []);
 
   const setQuestionData = (allCountriesData) => {
+    setQuestionType(getQuestionType(CAPITAL_QUESTION_TYPE, FLAG_QUESTION_TYPE));
     const countriesArray = [];
     for (let i = 0; i < 4; i++) {
       let countryData;
@@ -83,8 +84,7 @@ export const App = () => {
       );
       countriesArray.push(countryData);
     }
-    const rightAnswerIndex = getRandomIndex(countriesArray);
-    setRightCountry(countriesArray[rightAnswerIndex]);
+    setRightCountry(countriesArray[getRandomIndex(countriesArray)]);
     setAnswerChoices(countriesArray);
   };
 
