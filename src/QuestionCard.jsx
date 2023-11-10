@@ -2,13 +2,23 @@
 import { QuestionImage } from "./QuestionImage";
 import { Answer } from "./Answer";
 import cardIconSvg from "./assets/undraw_adventure_4hum_1.svg";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import "./QuestionCard.css";
+
+const CAPITAL_QUESTION_TYPE = 0;
+const FLAG_QUESTION_TYPE = 1;
+
+const getQuestionType = () => {
+  const randomNumber =
+    Math.floor(
+      Math.random() * (FLAG_QUESTION_TYPE - CAPITAL_QUESTION_TYPE + 1)
+    ) + CAPITAL_QUESTION_TYPE;
+  return randomNumber;
+};
 
 export function QuestionCard({
   rightCountry,
   answerChoices,
-  questionType,
   quizScore,
   onCorrectAnswer,
   onIncorrectAnswer,
@@ -19,6 +29,7 @@ export function QuestionCard({
   const [selectedAnswerIndexes, setSelectedAnswerIndexes] = useState([]);
   const [answered, setAnswered] = useState(false);
   const [incorrectAnswer, setIncorrectAnswer] = useState(false);
+  const questionType = useRef(getQuestionType());
 
   const handleAnswerClick = (e, index) => {
     e.preventDefault();
@@ -39,6 +50,7 @@ export function QuestionCard({
     if (incorrectAnswer) {
       onIncorrectAnswer(true);
     } else if (!isQuizEnded) {
+      questionType.current = getQuestionType();
       setNextQuestion(allCountriesData);
       setAnswered(false);
       setSelectedAnswerIndexes([]);
@@ -49,9 +61,11 @@ export function QuestionCard({
     <div>
       <img className="card-icon" src={cardIconSvg} alt="player icon" />
       <div className="question-div">
-        {questionType ? <QuestionImage rightCountry={rightCountry} /> : null}
+        {questionType.current ? (
+          <QuestionImage rightCountry={rightCountry} />
+        ) : null}
         <p className="question-content">
-          {questionType
+          {questionType.current
             ? "Which country does this flag belong to?"
             : `${rightCountry.capital[0]} is the capital of`}
         </p>
