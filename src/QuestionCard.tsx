@@ -99,8 +99,6 @@ export function QuestionCard({
     }
   };
 
-  console.log("rightCountry", rightCountry);
-
   return (
     <div>
       <img className="card-icon" src={cardIconSvg} alt="player icon" />
