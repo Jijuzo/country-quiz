@@ -74,8 +74,7 @@ export function QuestionCard({
     setAnswered(true);
   };
 
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
+  const handleFormSubmit = () => {
     if (incorrectAnswer) {
       onIncorrectAnswer(true);
     } else if (!isQuizEnded) {
@@ -85,8 +84,6 @@ export function QuestionCard({
       setSelectedAnswerIndexes([]);
     }
   };
-
-  console.log("rightCountry", rightCountry);
 
   return (
     <div>
@@ -122,7 +119,7 @@ export function QuestionCard({
         <button
           className="next-button"
           type="submit"
-          onClick={(e) => handleFormSubmit(e)}
+          onClick={handleFormSubmit}
         >
           {" "}
           {incorrectAnswer ? "Results" : "Next"}
