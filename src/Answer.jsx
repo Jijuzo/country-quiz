@@ -24,6 +24,7 @@ export function Answer({
   return (
     <li className="answer-li" key={index}>
       <button
+        disabled={answered}
         className={buttonClass}
         onClick={(e) => handleAnswerClick(e, index)}
         value={answer}

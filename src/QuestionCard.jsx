@@ -61,7 +61,6 @@ export function QuestionCard({
 
   const handleAnswerClick = (e, index) => {
     e.preventDefault();
-    if (answered) return;
     if (!selectedAnswerIndexes.includes(index)) {
       setSelectedAnswerIndexes([index, answerChoices.indexOf(rightCountry)]);
     }
