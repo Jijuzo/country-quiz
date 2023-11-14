@@ -86,7 +86,7 @@ export function QuestionCard({
 
   return (
     <div>
-      <img className="card-icon" src={cardIconSvg} alt="player icon" />
+      <img className="card-icon" src={cardIconSvg} alt="" />
       <div className="question-div">
         {questionType.current ? (
           <QuestionImage rightCountry={rightCountry} />

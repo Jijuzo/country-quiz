@@ -4,11 +4,7 @@ import "./QuizResults.css";
 export function QuizResults({ setIsQuizEnded, quizScore, setQuizScore }) {
   return (
     <div className="quiz-results-div">
-      <img
-        className="card-winner-icon"
-        src={cardWinnerIconSvg}
-        alt="winner icon"
-      />
+      <img className="card-winner-icon" src={cardWinnerIconSvg} alt="" />
       <p className="quiz-results-text">Results</p>
       <p className="correct-answers-content">
         You got <span className="correct-answers-quantity">{quizScore}</span>{" "}
