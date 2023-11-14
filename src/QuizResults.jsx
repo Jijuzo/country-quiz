@@ -2,13 +2,7 @@
 import cardWinnerIconSvg from "./assets/undraw_winners_ao2o_2.svg";
 import "./QuizResults.css";
 
-export function QuizResults({
-  setIsQuizEnded,
-  onTryAgain,
-  quizScore,
-  setQuizScore,
-  allCountriesData,
-}) {
+export function QuizResults({ setIsQuizEnded, quizScore, setQuizScore }) {
   return (
     <div className="quiz-results-div">
       <img
@@ -25,7 +19,6 @@ export function QuizResults({
         className="try-again-button"
         onSubmit={() => {
           setIsQuizEnded(false);
-          onTryAgain(allCountriesData);
           setQuizScore(0);
         }}
       >

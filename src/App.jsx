@@ -12,79 +12,44 @@ const QUESTION_DATA_URL = new URL(
   BASE_URL
 );
 
-const reducer = (state, action) => {
+const countriesReducer = (state, action) => {
   switch (action.type) {
-    case "updateCountries":
+    case "success":
       return {
-        allCountriesData: action.updateCountries,
+        data: action.payload.data,
         error: null,
         isLoading: false,
       };
     case "loading":
       return {
-        allCountriesData: state.allCountriesData,
+        ...state,
         error: null,
         isLoading: true,
       };
     case "error":
       return {
-        allCountriesData: state.allCountriesData,
-        error: action.setError,
-        isLoading: state.isLoading,
+        data: null,
+        error: action.payload.error,
+        isLoading: false,
       };
-    case "notLoading":
+    case "idle":
       return {
-        allCountriesData: state.allCountriesData,
-        error: state.error,
+        ...state,
         isLoading: false,
       };
   }
 };
 
-const getRandomIndex = (array) => {
-  return Math.floor(Math.random() * array.length);
-};
-
-const getRandomCountry = (countries) => {
-  return countries[getRandomIndex(countries)];
-};
-
-const getQuestionData = (allCountriesData) => {
-  const countriesArray = [];
-  for (let i = 0; i < 4; i++) {
-    let countryData;
-    do {
-      countryData = getRandomCountry(allCountriesData);
-    } while (
-      countriesArray.includes(countryData) ||
-      countryData.capital[0] === undefined ||
-      countryData.name.common === undefined ||
-      countryData.flags.png === undefined
-    );
-    countriesArray.push(countryData);
-  }
-  return countriesArray;
-};
-
 export const App = () => {
   const [isQuizEnded, setIsQuizEnded] = useState(false);
   const [quizScore, setQuizScore] = useState(0);
-  const [answerChoices, setAnswerChoices] = useState();
-  const [rightCountry, setRightCountry] = useState(null);
-  const [allCountries, dispatch] = useReducer(reducer, {
-    allCountriesData: null,
+  const [countriesState, dispatch] = useReducer(countriesReducer, {
+    data: null,
     error: null,
     isLoading: false,
   });
 
-  const setQuestionData = (allCountriesData) => {
-    const answerChoices = getQuestionData(allCountriesData);
-    setRightCountry(answerChoices[getRandomIndex(answerChoices)]);
-    setAnswerChoices(answerChoices);
-  };
-
   useEffect(() => {
-    if (rightCountry) return;
     const fetchQuestionData = async () => {
       dispatch({ type: "loading" });
       try {
@@ -93,24 +58,21 @@ export const App = () => {
           throw new Error(`HTTP error! Status: ${promise.status}`);
         }
         const result = await promise.json();
-        dispatch({ type: "updateCountries", updateCountries: result });
-        setQuestionData(result);
+        dispatch({ type: "success", payload: { data: result } });
       } catch (error) {
         console.error("Error:", error);
-        dispatch({ type: "error", setError: error });
+        dispatch({ type: "error", payload: { error } });
       } finally {
-        dispatch({ type: "notLoading" });
+        dispatch({ type: "idle" });
       }
     };
 
     fetchQuestionData();
-  }, [rightCountry]);
-
-  console.log("addsaadw", rightCountry);
+  }, []);
 
   return (
     <main className="page">
-      {allCountries.isLoading ? (
+      {countriesState.isLoading ? (
         <div className="spinner-container">
           <DotSpinner size={100} speed={0.9} color="black" />
         </div>
@@ -118,31 +80,26 @@ export const App = () => {
         <div className="card-div">
           <h1 className="card-header">country quiz</h1>
           <form className="card">
-            {rightCountry && !isQuizEnded && (
+            {countriesState.data && !isQuizEnded && (
               <QuestionCard
-                rightCountry={rightCountry}
-                answerChoices={answerChoices}
                 quizScore={quizScore}
                 onCorrectAnswer={setQuizScore}
                 isQuizEnded={isQuizEnded}
                 onIncorrectAnswer={setIsQuizEnded}
-                allCountriesData={allCountries.allCountriesData}
-                setNextQuestion={setQuestionData}
+                allCountriesData={countriesState.data}
               />
             )}
             {isQuizEnded && (
               <QuizResults
                 setIsQuizEnded={setIsQuizEnded}
-                onTryAgain={setQuestionData}
                 quizScore={quizScore}
                 setQuizScore={setQuizScore}
-                allCountriesData={allCountries.allCountriesData}
               />
             )}
           </form>
         </div>
       )}
-      <ErrorMessage error={allCountries.error} />
+      <ErrorMessage error={countriesState.error} />
       <Footer />
     </main>
   );
