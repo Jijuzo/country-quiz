@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import cardWinnerIconSvg from "./assets/undraw_winners_ao2o_2.svg";
 import "./QuizResults.css";
 

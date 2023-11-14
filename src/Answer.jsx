@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import "./Answer.css";
 import classNames from "classnames";
 

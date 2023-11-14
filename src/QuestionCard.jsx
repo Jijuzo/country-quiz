@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { QuestionImage } from "./QuestionImage";
 import { Answer } from "./Answer";
 import cardIconSvg from "./assets/undraw_adventure_4hum_1.svg";
