@@ -1,8 +1,8 @@
-/* eslint-disable react/prop-types */
 import { QuestionImage } from "./QuestionImage";
 import { Answer } from "./Answer";
 import cardIconSvg from "./assets/undraw_adventure_4hum_1.svg";
 import { useMemo, useRef, useState } from "react";
+import { AllCountriesType } from "./App";
 import "./QuestionCard.css";
 
 const CAPITAL_QUESTION_TYPE = 0;
@@ -16,16 +16,16 @@ const getQuestionType = () => {
   return randomNumber;
 };
 
-const getRandomIndex = (array) => {
+const getRandomIndex = (array: Array<Object>) => {
   return Math.floor(Math.random() * array.length);
 };
 
-const getRandomCountry = (countries) => {
+const getRandomCountry = (countries: AllCountriesType) => {
   return countries[getRandomIndex(countries)];
 };
 
-const getQuestionData = (allCountriesData) => {
-  const countriesArray = [];
+const getQuestionData = (allCountriesData: AllCountriesType) => {
+  const countriesArray: Object[] = [];
   for (let i = 0; i < 4; i++) {
     let countryData;
     do {
@@ -38,7 +38,15 @@ const getQuestionData = (allCountriesData) => {
     );
     countriesArray.push(countryData);
   }
-  return countriesArray;
+  return countriesArray as AllCountriesType;
+};
+
+type QuestionCardProps = {
+  allCountriesData: AllCountriesType;
+  quizScore: number;
+  onCorrectAnswer: React.Dispatch<React.SetStateAction<number>>;
+  isQuizEnded: boolean;
+  onIncorrectAnswer: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export function QuestionCard({
@@ -47,20 +55,25 @@ export function QuestionCard({
   onIncorrectAnswer,
   isQuizEnded,
   allCountriesData,
-}) {
-  const [selectedAnswerIndexes, setSelectedAnswerIndexes] = useState([]);
+}: QuestionCardProps) {
+  const [selectedAnswerIndexes, setSelectedAnswerIndexes] = useState<number[]>(
+    []
+  );
   const [answered, setAnswered] = useState(false);
   const [incorrectAnswer, setIncorrectAnswer] = useState(false);
   const questionType = useRef(getQuestionType());
-  const [answerChoices, setAnswerChoices] = useState(
+  const [answerChoices, setAnswerChoices] = useState<AllCountriesType>(
     getQuestionData(allCountriesData)
   );
-  const rightCountry = useMemo(
+  const rightCountry: AllCountriesType[number] = useMemo(
     () => answerChoices[getRandomIndex(answerChoices)],
     [answerChoices]
   );
 
-  const handleAnswerClick = (e, index) => {
+  const handleAnswerClick = (
+    e: React.MouseEvent<HTMLElement>,
+    index: number
+  ) => {
     e.preventDefault();
     if (answered) return;
     if (!selectedAnswerIndexes.includes(index)) {
@@ -74,7 +87,7 @@ export function QuestionCard({
     setAnswered(true);
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (incorrectAnswer) {
       onIncorrectAnswer(true);

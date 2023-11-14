@@ -1,8 +1,16 @@
-/* eslint-disable react/prop-types */
 import "./Answer.css";
 import classNames from "classnames";
 
 const prefixes = ["A", "B", "C", "D"];
+
+type AnswerProps = {
+  index: number;
+  correctAnswerIndex: number | null;
+  handleAnswerClick: (e: React.MouseEvent<HTMLElement>, index: number) => void;
+  answered: boolean;
+  answer: string;
+  selectedAnswerIndexes: number[];
+};
 
 export function Answer({
   index,
@@ -11,7 +19,7 @@ export function Answer({
   answered,
   answer,
   selectedAnswerIndexes,
-}) {
+}: AnswerProps) {
   const buttonClass = classNames("answer-button", {
     "correct-answer":
       selectedAnswerIndexes.includes(index) && index === correctAnswerIndex,
@@ -26,7 +34,9 @@ export function Answer({
     <li className="answer-li" key={index}>
       <button
         className={buttonClass}
-        onClick={(e) => handleAnswerClick(e, index)}
+        onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+          handleAnswerClick(e, index)
+        }
         value={answer}
       >
         <span className="answer-span">{prefixes[index]}</span> {answer}

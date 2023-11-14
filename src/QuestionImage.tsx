@@ -1,5 +1,10 @@
-/* eslint-disable react/prop-types */
-export function QuestionImage({ rightCountry }) {
+import { AllCountriesType } from "./App";
+
+export function QuestionImage({
+  rightCountry,
+}: {
+  rightCountry: AllCountriesType[number];
+}) {
   return (
     <img
       className="question-flag"

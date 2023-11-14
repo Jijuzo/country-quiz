@@ -1,8 +1,17 @@
-/* eslint-disable react/prop-types */
 import cardWinnerIconSvg from "./assets/undraw_winners_ao2o_2.svg";
 import "./QuizResults.css";
 
-export function QuizResults({ setIsQuizEnded, quizScore, setQuizScore }) {
+type QuizResultsProps = {
+  setIsQuizEnded: React.Dispatch<React.SetStateAction<boolean>>;
+  quizScore: number;
+  setQuizScore: React.Dispatch<React.SetStateAction<number>>;
+};
+
+export function QuizResults({
+  setIsQuizEnded,
+  quizScore,
+  setQuizScore,
+}: QuizResultsProps) {
   return (
     <div className="quiz-results-div">
       <img
@@ -17,7 +26,7 @@ export function QuizResults({ setIsQuizEnded, quizScore, setQuizScore }) {
       </p>
       <button
         className="try-again-button"
-        onSubmit={() => {
+        onClick={() => {
           setIsQuizEnded(false);
           setQuizScore(0);
         }}

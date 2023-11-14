@@ -12,19 +12,39 @@ const QUESTION_DATA_URL = new URL(
   BASE_URL
 );
 
-const countriesReducer = (state, action) => {
+export type AllCountriesType = Array<{
+  capital: string[];
+  name: { common: string };
+  flags: { png: string };
+}>;
+
+type CountriesDataAction =
+  | { type: "success"; payload: { data: AllCountriesType } }
+  | { type: "error"; payload: { error: Error } }
+  | { type: "loading" }
+  | { type: "idle" };
+
+type CountriesDataState = {
+  data: AllCountriesType | null;
+  error: Error | null;
+  isLoading: boolean;
+};
+
+const countriesReducer = (
+  state: CountriesDataState,
+  action: CountriesDataAction
+) => {
   switch (action.type) {
+    case "loading":
+      return {
+        ...state,
+        isLoading: true,
+      };
     case "success":
       return {
         data: action.payload.data,
         error: null,
         isLoading: false,
-      };
-    case "loading":
-      return {
-        ...state,
-        error: null,
-        isLoading: true,
       };
     case "error":
       return {
@@ -50,24 +70,25 @@ export const App = () => {
   });
 
   useEffect(() => {
-    const fetchQuestionData = async () => {
+    const fetchQuestionData = async <T extends AllCountriesType>() => {
       dispatch({ type: "loading" });
       try {
         const promise = await fetch(QUESTION_DATA_URL);
         if (!promise.ok) {
           throw new Error(`HTTP error! Status: ${promise.status}`);
         }
-        const result = await promise.json();
+        const result = (await promise.json()) as T;
         dispatch({ type: "success", payload: { data: result } });
       } catch (error) {
         console.error("Error:", error);
-        dispatch({ type: "error", payload: { error } });
+        if (error instanceof Error)
+          dispatch({ type: "error", payload: { error } });
       } finally {
         dispatch({ type: "idle" });
       }
     };
 
-    fetchQuestionData();
+    fetchQuestionData<AllCountriesType>();
   }, []);
 
   return (
@@ -105,6 +126,6 @@ export const App = () => {
   );
 };
 
-const container = document.getElementById("root");
+const container = document.getElementById("root") as HTMLElement;
 const root = createRoot(container);
 root.render(<App />);
