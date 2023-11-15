@@ -47,9 +47,9 @@ export function QuestionCard({
   isQuizEnded,
   allCountriesData,
 }) {
-  const [selectedAnswerIndexes, setSelectedAnswerIndexes] = useState([]);
+  const [selectedAnswer, setSelectedAnswer] = useState();
   const [answered, setAnswered] = useState(false);
-  const [incorrectAnswer, setIncorrectAnswer] = useState(false);
+  const [correctAnswer, setCorrectAnswer] = useState(false);
   const [questionType, setQuestionType] = useState(getQuestionType());
   const [answerChoices, setAnswerChoices] = useState(
     getQuestionData(allCountriesData)
@@ -59,31 +59,27 @@ export function QuestionCard({
     [answerChoices]
   );
 
-  const handleAnswerClick = (e, index) => {
-    e.preventDefault();
-    if (!selectedAnswerIndexes.includes(index)) {
-      setSelectedAnswerIndexes([index, answerChoices.indexOf(rightCountry)]);
-    }
-    if (index === answerChoices.indexOf(rightCountry)) {
+  const handleAnswerClick = (e) => {
+    setSelectedAnswer(e.target.value);
+    if (e.target.value === rightCountry.name.common) {
+      setCorrectAnswer(true);
       onCorrectAnswer(quizScore + 1);
     } else {
-      setIncorrectAnswer(true);
+      setCorrectAnswer(false);
     }
     setAnswered(true);
   };
 
   const handleFormSubmit = () => {
-    if (incorrectAnswer) {
+    if (!correctAnswer) {
       onIncorrectAnswer(true);
     } else if (!isQuizEnded) {
       setQuestionType(getQuestionType());
       setAnswerChoices(getQuestionData(allCountriesData));
       setAnswered(false);
-      setSelectedAnswerIndexes([]);
+      setSelectedAnswer(null);
     }
   };
-
-  console.log("rightCountry", rightCountry);
 
   return (
     <div>
@@ -104,7 +100,7 @@ export function QuestionCard({
                 key={index}
                 answer={answer.name.common}
                 index={index}
-                selectedAnswerIndexes={selectedAnswerIndexes}
+                selectedAnswer={selectedAnswer}
                 correctAnswerIndex={answerChoices.indexOf(rightCountry)}
                 answered={answered}
                 handleAnswerClick={handleAnswerClick}
@@ -120,7 +116,7 @@ export function QuestionCard({
           onClick={handleFormSubmit}
         >
           {" "}
-          {incorrectAnswer ? "Results" : "Next"}
+          {correctAnswer ? "Next" : "Results"}
         </button>
       )}
     </div>
