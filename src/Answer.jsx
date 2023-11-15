@@ -5,29 +5,29 @@ const prefixes = ["A", "B", "C", "D"];
 
 export function Answer({
   index,
-  correctAnswerIndex,
   handleAnswerClick,
   answered,
   answer,
-  selectedAnswerIndexes,
+  correctAnswerIndex,
+  selectedAnswer,
 }) {
   const buttonClass = classNames("answer-button", {
-    "correct-answer":
-      selectedAnswerIndexes.includes(index) && index === correctAnswerIndex,
+    "correct-answer": answered && index === correctAnswerIndex,
     "incorrect-answer":
-      selectedAnswerIndexes.includes(index) && index !== correctAnswerIndex,
+      answered && index !== correctAnswerIndex && answer === selectedAnswer,
     "long-answer": answer.length > 30,
     "cursor-before-answer": !answered,
     "cursor-after-answer": answered,
   });
 
   return (
-    <li className="answer-li" key={index}>
+    <li className="answer-li">
       <button
-        disabled={answered}
+        type="button"
         className={buttonClass}
-        onClick={(e) => handleAnswerClick(e, index)}
+        onClick={handleAnswerClick}
         value={answer}
+        disabled={answered}
       >
         <span className="answer-span">{prefixes[index]}</span> {answer}
       </button>
