@@ -1,7 +1,7 @@
 import { QuestionImage } from "./QuestionImage";
 import { Answer } from "./Answer";
 import cardIconSvg from "./assets/undraw_adventure_4hum_1.svg";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import "./QuestionCard.css";
 
 const CAPITAL_QUESTION_TYPE = 0;
@@ -50,7 +50,7 @@ export function QuestionCard({
   const [selectedAnswerIndexes, setSelectedAnswerIndexes] = useState([]);
   const [answered, setAnswered] = useState(false);
   const [incorrectAnswer, setIncorrectAnswer] = useState(false);
-  const questionType = useRef(getQuestionType());
+  const [questionType, setQuestionType] = useState(getQuestionType());
   const [answerChoices, setAnswerChoices] = useState(
     getQuestionData(allCountriesData)
   );
@@ -76,22 +76,22 @@ export function QuestionCard({
     if (incorrectAnswer) {
       onIncorrectAnswer(true);
     } else if (!isQuizEnded) {
-      questionType.current = getQuestionType();
+      setQuestionType(getQuestionType());
       setAnswerChoices(getQuestionData(allCountriesData));
       setAnswered(false);
       setSelectedAnswerIndexes([]);
     }
   };
 
+  console.log("rightCountry", rightCountry);
+
   return (
     <div>
       <img className="card-icon" src={cardIconSvg} alt="" />
       <div className="question-div">
-        {questionType.current ? (
-          <QuestionImage rightCountry={rightCountry} />
-        ) : null}
+        {questionType ? <QuestionImage rightCountry={rightCountry} /> : null}
         <p className="question-content">
-          {questionType.current
+          {questionType
             ? "Which country does this flag belong to?"
             : `${rightCountry.capital[0]} is the capital of`}
         </p>
