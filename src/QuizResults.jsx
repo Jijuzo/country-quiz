@@ -1,7 +1,7 @@
 import cardWinnerIconSvg from "./assets/undraw_winners_ao2o_2.svg";
 import "./QuizResults.css";
 
-export function QuizResults({ setIsQuizEnded, quizScore, setQuizScore }) {
+export function QuizResults({ quizScore, onTryAgain }) {
   return (
     <div className="quiz-results-div">
       <img className="card-winner-icon" src={cardWinnerIconSvg} alt="" />
@@ -10,13 +10,7 @@ export function QuizResults({ setIsQuizEnded, quizScore, setQuizScore }) {
         You got <span className="correct-answers-quantity">{quizScore}</span>{" "}
         correct answers
       </p>
-      <button
-        className="try-again-button"
-        onSubmit={() => {
-          setIsQuizEnded(false);
-          setQuizScore(0);
-        }}
-      >
+      <button className="try-again-button" onSubmit={onTryAgain}>
         try again
       </button>
     </div>
