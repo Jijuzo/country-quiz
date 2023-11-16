@@ -1,8 +1,8 @@
-export function QuestionImage({ rightCountry }) {
+export function QuestionImage({ country }) {
   return (
     <img
       className="question-flag"
-      src={`${rightCountry.flags.png}`}
+      src={`${country.flags.png}`}
       width="84px"
       height="54px"
       style={{ border: "1px solid black" }}
