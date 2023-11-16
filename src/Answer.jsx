@@ -9,12 +9,13 @@ export function Answer({
   answered,
   answer,
   correctAnswerIndex,
-  selectedAnswer,
+  selectedAnswerIndex,
 }) {
+  const isSelected = index === selectedAnswerIndex;
+  const isCorrect = index === correctAnswerIndex;
   const buttonClass = classNames("answer-button", {
-    "correct-answer": answered && index === correctAnswerIndex,
-    "incorrect-answer":
-      answered && index !== correctAnswerIndex && answer === selectedAnswer,
+    "correct-answer": answered && isCorrect,
+    "incorrect-answer": isSelected && !isCorrect,
     "long-answer": answer.length > 30,
     "cursor-before-answer": !answered,
     "cursor-after-answer": answered,
