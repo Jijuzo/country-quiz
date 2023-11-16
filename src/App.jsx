@@ -91,9 +91,11 @@ export const App = () => {
             )}
             {isQuizEnded && (
               <QuizResults
-                setIsQuizEnded={setIsQuizEnded}
                 quizScore={quizScore}
-                setQuizScore={setQuizScore}
+                onTryAgain={() => {
+                  setIsQuizEnded(false);
+                  setQuizScore(0);
+                }}
               />
             )}
           </form>
