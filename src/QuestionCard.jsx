@@ -47,9 +47,8 @@ export function QuestionCard({
   isQuizEnded,
   allCountriesData,
 }) {
-  const [selectedAnswer, setSelectedAnswer] = useState();
+  const [selectedAnswerIndex, setSelectedAnswerIndex] = useState();
   const [answered, setAnswered] = useState(false);
-  const [correctAnswer, setCorrectAnswer] = useState(false);
   const [questionType, setQuestionType] = useState(getQuestionType());
   const [answerChoices, setAnswerChoices] = useState(
     getQuestionData(allCountriesData)
@@ -59,25 +58,22 @@ export function QuestionCard({
     [answerChoices]
   );
 
-  const handleAnswerClick = (e) => {
-    setSelectedAnswer(e.target.value);
+  const handleAnswerClick = (e, index) => {
+    setSelectedAnswerIndex(index);
     if (e.target.value === rightCountry.name.common) {
-      setCorrectAnswer(true);
       onCorrectAnswer(quizScore + 1);
-    } else {
-      setCorrectAnswer(false);
     }
     setAnswered(true);
   };
 
   const handleFormSubmit = () => {
-    if (!correctAnswer) {
+    if (selectedAnswerIndex !== answerChoices.indexOf(rightCountry)) {
       onIncorrectAnswer(true);
     } else if (!isQuizEnded) {
       setQuestionType(getQuestionType());
       setAnswerChoices(getQuestionData(allCountriesData));
       setAnswered(false);
-      setSelectedAnswer(null);
+      setSelectedAnswerIndex(null);
     }
   };
 
@@ -85,7 +81,7 @@ export function QuestionCard({
     <div>
       <img className="card-icon" src={cardIconSvg} alt="" />
       <div className="question-div">
-        {questionType ? <QuestionImage rightCountry={rightCountry} /> : null}
+        {questionType ? <QuestionImage country={rightCountry} /> : null}
         <p className="question-content">
           {questionType
             ? "Which country does this flag belong to?"
@@ -100,10 +96,12 @@ export function QuestionCard({
                 key={index}
                 answer={answer.name.common}
                 index={index}
-                selectedAnswer={selectedAnswer}
+                selectedAnswerIndex={selectedAnswerIndex}
                 correctAnswerIndex={answerChoices.indexOf(rightCountry)}
                 answered={answered}
-                handleAnswerClick={handleAnswerClick}
+                handleAnswerClick={(e) => {
+                  handleAnswerClick(e, index);
+                }}
               />
             );
           })}
@@ -115,8 +113,9 @@ export function QuestionCard({
           type="submit"
           onClick={handleFormSubmit}
         >
-          {" "}
-          {correctAnswer ? "Next" : "Results"}
+          {selectedAnswerIndex === answerChoices.indexOf(rightCountry)
+            ? "Next"
+            : "Results"}
         </button>
       )}
     </div>
