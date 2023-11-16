@@ -47,8 +47,7 @@ export function QuestionCard({
   isQuizEnded,
   allCountriesData,
 }) {
-  const [selectedAnswerIndex, setSelectedAnswerIndex] = useState();
-  const [answered, setAnswered] = useState(false);
+  const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(null);
   const [questionType, setQuestionType] = useState(getQuestionType());
   const [answerChoices, setAnswerChoices] = useState(
     getQuestionData(allCountriesData)
@@ -63,7 +62,6 @@ export function QuestionCard({
     if (e.target.value === rightCountry.name.common) {
       onCorrectAnswer(quizScore + 1);
     }
-    setAnswered(true);
   };
 
   const handleFormSubmit = () => {
@@ -72,10 +70,15 @@ export function QuestionCard({
     } else if (!isQuizEnded) {
       setQuestionType(getQuestionType());
       setAnswerChoices(getQuestionData(allCountriesData));
-      setAnswered(false);
       setSelectedAnswerIndex(null);
     }
   };
+
+  console.log(
+    rightCountry.name.common,
+    " selectedAnswerIndex",
+    selectedAnswerIndex
+  );
 
   return (
     <div>
@@ -98,7 +101,7 @@ export function QuestionCard({
                 index={index}
                 selectedAnswerIndex={selectedAnswerIndex}
                 correctAnswerIndex={answerChoices.indexOf(rightCountry)}
-                answered={answered}
+                answered={selectedAnswerIndex !== null}
                 handleAnswerClick={(e) => {
                   handleAnswerClick(e, index);
                 }}
@@ -107,7 +110,7 @@ export function QuestionCard({
           })}
         </ul>
       </div>
-      {answered && (
+      {selectedAnswerIndex !== null && (
         <button
           className="next-button"
           type="submit"
