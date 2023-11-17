@@ -74,12 +74,6 @@ export function QuestionCard({
     }
   };
 
-  console.log(
-    rightCountry.name.common,
-    " selectedAnswerIndex",
-    selectedAnswerIndex
-  );
-
   return (
     <div>
       <img className="card-icon" src={cardIconSvg} alt="" />
