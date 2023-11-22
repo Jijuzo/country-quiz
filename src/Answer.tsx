@@ -5,39 +5,39 @@ const prefixes = ["A", "B", "C", "D"];
 
 type AnswerProps = {
   index: number;
-  correctAnswerIndex: number | null;
-  handleAnswerClick: (e: React.MouseEvent<HTMLElement>, index: number) => void;
+  correctAnswerIndex: number;
+  onClick: (e: React.MouseEvent<HTMLElement>, index: number) => void;
   answered: boolean;
   answer: string;
-  selectedAnswerIndexes: number[];
+  selectedAnswerIndex: number;
 };
 
 export function Answer({
   index,
-  correctAnswerIndex,
-  handleAnswerClick,
+  onClick,
   answered,
   answer,
-  selectedAnswerIndexes,
+  correctAnswerIndex,
+  selectedAnswerIndex,
 }: AnswerProps) {
+  const isSelected = index === selectedAnswerIndex;
+  const isCorrect = index === correctAnswerIndex;
   const buttonClass = classNames("answer-button", {
-    "correct-answer":
-      selectedAnswerIndexes.includes(index) && index === correctAnswerIndex,
-    "incorrect-answer":
-      selectedAnswerIndexes.includes(index) && index !== correctAnswerIndex,
+    "correct-answer": answered && isCorrect,
+    "incorrect-answer": isSelected && !isCorrect,
     "long-answer": answer.length > 30,
     "cursor-before-answer": !answered,
     "cursor-after-answer": answered,
   });
 
   return (
-    <li className="answer-li" key={index}>
+    <li className="answer-li">
       <button
+        type="button"
         className={buttonClass}
-        onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-          handleAnswerClick(e, index)
-        }
+        onClick={(e: React.MouseEvent<HTMLButtonElement>) => onClick(e, index)}
         value={answer}
+        disabled={answered}
       >
         <span className="answer-span">{prefixes[index]}</span> {answer}
       </button>
