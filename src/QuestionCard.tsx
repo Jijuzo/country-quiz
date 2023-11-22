@@ -1,9 +1,9 @@
 import { QuestionImage } from "./QuestionImage";
 import { Answer } from "./Answer";
 import cardIconSvg from "./assets/undraw_adventure_4hum_1.svg";
-import { useMemo, useRef, useState } from "react";
-import { AllCountriesType } from "./App";
+import { useMemo, useState } from "react";
 import "./QuestionCard.css";
+import { AllCountries } from "./App";
 
 const CAPITAL_QUESTION_TYPE = 0;
 const FLAG_QUESTION_TYPE = 1;
@@ -16,16 +16,16 @@ const getQuestionType = () => {
   return randomNumber;
 };
 
-const getRandomIndex = (array: Array<Object>) => {
+const getRandomIndex = (array: Array<unknown>) => {
   return Math.floor(Math.random() * array.length);
 };
 
-const getRandomCountry = (countries: AllCountriesType) => {
+const getRandomCountry = (countries: AllCountries) => {
   return countries[getRandomIndex(countries)];
 };
 
-const getQuestionData = (allCountriesData: AllCountriesType) => {
-  const countriesArray: Object[] = [];
+const getQuestionData = (allCountriesData: AllCountries) => {
+  const countriesArray: unknown[] = [];
   for (let i = 0; i < 4; i++) {
     let countryData;
     do {
@@ -38,15 +38,15 @@ const getQuestionData = (allCountriesData: AllCountriesType) => {
     );
     countriesArray.push(countryData);
   }
-  return countriesArray as AllCountriesType;
+  return countriesArray as AllCountries;
 };
 
 type QuestionCardProps = {
-  allCountriesData: AllCountriesType;
-  quizScore: number;
+  allCountriesData: AllCountries;
   onCorrectAnswer: React.Dispatch<React.SetStateAction<number>>;
-  isQuizEnded: boolean;
   onIncorrectAnswer: React.Dispatch<React.SetStateAction<boolean>>;
+  quizScore: number;
+  isQuizEnded: boolean;
 };
 
 export function QuestionCard({
@@ -56,16 +56,14 @@ export function QuestionCard({
   isQuizEnded,
   allCountriesData,
 }: QuestionCardProps) {
-  const [selectedAnswerIndexes, setSelectedAnswerIndexes] = useState<number[]>(
-    []
+  const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(
+    null
   );
-  const [answered, setAnswered] = useState(false);
-  const [incorrectAnswer, setIncorrectAnswer] = useState(false);
-  const questionType = useRef(getQuestionType());
-  const [answerChoices, setAnswerChoices] = useState<AllCountriesType>(
+  const [questionType, setQuestionType] = useState(getQuestionType());
+  const [answerChoices, setAnswerChoices] = useState(
     getQuestionData(allCountriesData)
   );
-  const rightCountry: AllCountriesType[number] = useMemo(
+  const rightCountry = useMemo(
     () => answerChoices[getRandomIndex(answerChoices)],
     [answerChoices]
   );
@@ -74,40 +72,29 @@ export function QuestionCard({
     e: React.MouseEvent<HTMLElement>,
     index: number
   ) => {
-    e.preventDefault();
-    if (answered) return;
-    if (!selectedAnswerIndexes.includes(index)) {
-      setSelectedAnswerIndexes([index, answerChoices.indexOf(rightCountry)]);
-    }
-    if (index === answerChoices.indexOf(rightCountry)) {
+    setSelectedAnswerIndex(index);
+    if ((e.target as HTMLInputElement).value === rightCountry.name.common) {
       onCorrectAnswer(quizScore + 1);
-    } else {
-      setIncorrectAnswer(true);
     }
-    setAnswered(true);
   };
 
-  const handleFormSubmit = (e: React.FormEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    if (incorrectAnswer) {
+  const handleFormSubmit = () => {
+    if (selectedAnswerIndex !== answerChoices.indexOf(rightCountry)) {
       onIncorrectAnswer(true);
     } else if (!isQuizEnded) {
-      questionType.current = getQuestionType();
+      setQuestionType(getQuestionType());
       setAnswerChoices(getQuestionData(allCountriesData));
-      setAnswered(false);
-      setSelectedAnswerIndexes([]);
+      setSelectedAnswerIndex(null);
     }
   };
 
   return (
     <div>
-      <img className="card-icon" src={cardIconSvg} alt="player icon" />
+      <img className="card-icon" src={cardIconSvg} alt="" />
       <div className="question-div">
-        {questionType.current ? (
-          <QuestionImage rightCountry={rightCountry} />
-        ) : null}
+        {questionType ? <QuestionImage country={rightCountry} /> : null}
         <p className="question-content">
-          {questionType.current
+          {questionType
             ? "Which country does this flag belong to?"
             : `${rightCountry.capital[0]} is the capital of`}
         </p>
@@ -120,23 +107,24 @@ export function QuestionCard({
                 key={index}
                 answer={answer.name.common}
                 index={index}
-                selectedAnswerIndexes={selectedAnswerIndexes}
+                selectedAnswerIndex={selectedAnswerIndex as number}
                 correctAnswerIndex={answerChoices.indexOf(rightCountry)}
-                answered={answered}
-                handleAnswerClick={handleAnswerClick}
+                answered={selectedAnswerIndex !== null}
+                onClick={handleAnswerClick}
               />
             );
           })}
         </ul>
       </div>
-      {answered && (
+      {selectedAnswerIndex !== null && (
         <button
           className="next-button"
           type="submit"
-          onClick={(e) => handleFormSubmit(e)}
+          onClick={handleFormSubmit}
         >
-          {" "}
-          {incorrectAnswer ? "Results" : "Next"}
+          {selectedAnswerIndex === answerChoices.indexOf(rightCountry)
+            ? "Next"
+            : "Results"}
         </button>
       )}
     </div>
