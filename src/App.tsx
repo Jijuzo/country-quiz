@@ -12,20 +12,20 @@ const QUESTION_DATA_URL = new URL(
   BASE_URL
 );
 
-export type AllCountriesType = Array<{
+export type AllCountries = Array<{
   capital: string[];
   name: { common: string };
   flags: { png: string };
 }>;
 
 type CountriesDataAction =
-  | { type: "success"; payload: { data: AllCountriesType } }
+  | { type: "success"; payload: { data: AllCountries } }
   | { type: "error"; payload: { error: Error } }
   | { type: "loading" }
   | { type: "idle" };
 
 type CountriesDataState = {
-  data: AllCountriesType | null;
+  data: AllCountries | null;
   error: Error | null;
   isLoading: boolean;
 };
@@ -35,16 +35,17 @@ const countriesReducer = (
   action: CountriesDataAction
 ) => {
   switch (action.type) {
-    case "loading":
-      return {
-        ...state,
-        isLoading: true,
-      };
     case "success":
       return {
         data: action.payload.data,
         error: null,
         isLoading: false,
+      };
+    case "loading":
+      return {
+        ...state,
+        error: null,
+        isLoading: true,
       };
     case "error":
       return {
@@ -70,7 +71,7 @@ export const App = () => {
   });
 
   useEffect(() => {
-    const fetchQuestionData = async <T extends AllCountriesType>() => {
+    const fetchQuestionData = async <T extends AllCountries>() => {
       dispatch({ type: "loading" });
       try {
         const promise = await fetch(QUESTION_DATA_URL);
@@ -88,7 +89,7 @@ export const App = () => {
       }
     };
 
-    fetchQuestionData<AllCountriesType>();
+    fetchQuestionData<AllCountries>();
   }, []);
 
   return (
@@ -112,15 +113,17 @@ export const App = () => {
             )}
             {isQuizEnded && (
               <QuizResults
-                setIsQuizEnded={setIsQuizEnded}
                 quizScore={quizScore}
-                setQuizScore={setQuizScore}
+                onTryAgain={() => {
+                  setIsQuizEnded(false);
+                  setQuizScore(0);
+                }}
               />
             )}
           </form>
         </div>
       )}
-      <ErrorMessage error={countriesState.error} />
+      <ErrorMessage error={countriesState.error as Error} />
       <Footer />
     </main>
   );
