@@ -1,0 +1,108 @@
+:root {
+  --font-family-default: "Poppins", sans-serif;
+  --font-weight-default: 500;
+  --font-weight-semi-bold: 600;
+  --font-weight-bold: 700;
+  --font-size-card-header: 36px;
+  --font-size-card-header-max-width-500px: 28px;
+  --font-size-card-header-max-width-400px: 24px;
+  --font-size-question: 24px;
+  --font-size-answer: 18px;
+  --font-size-long-answer: 16px;
+  --font-size-next-button: 18px;
+  --font-size-quiz-results-text: 48px;
+  --font-size-correct-answers-content: 18px;
+  --font-size-correct-answers-quantity: 36px;
+  --font-size-try-again-button: 18px;
+  --font-size-error-message-max-width-500px: 14px;
+  --font-size-footer: 14px;
+  --color-white: #f2f2f2;
+  --color-red: #ea8282;
+  --color-orange: #f9a826;
+  --color-light-green: #6fcf97;
+  --color-blue: rgba(96, 102, 208, 0.8);
+  --color-dark-blue: #1d355d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-image: url("./assets/background.png");
+  background-size: cover;
+  background-position: center;
+}
+
+.page {
+  min-width: 100vw;
+  min-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+}
+
+.card-div {
+  padding-top: 7vh;
+}
+
+.card-header {
+  margin: 10px;
+  font-family: var(--font-family-default);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-card-header);
+  color: var(--color-white);
+  line-height: normal;
+  text-transform: uppercase;
+}
+
+.card {
+  width: 460px;
+  min-height: 560px;
+  height: auto;
+  position: relative;
+  border-radius: 24px;
+  background: var(--color-white);
+  padding-bottom: 30px;
+}
+
+.spinner-container {
+  position: absolute;
+  bottom: 50%;
+  left: 50%;
+}
+
+@media (max-width: 500px) {
+  .card-div {
+    padding-top: 2vh;
+  }
+  .card {
+    width: 400px;
+    min-height: 400px;
+  }
+  .card-header {
+    font-size: var(--font-size-card-header-max-width-500px);
+  }
+}
+
+@media (max-width: 400px) {
+  .card {
+    width: 350px;
+  }
+  .card-header {
+    font-size: var(--font-size-card-header-max-width-400px);
+  }
+}
+
+@media (max-height: 900px) {
+  .card {
+    min-height: 500px;
+  }
+}
+
+@media (max-height: 700px) {
+  .card {
+    min-height: 400px;
+  }
+}

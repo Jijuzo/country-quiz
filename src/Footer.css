@@ -1,0 +1,15 @@
+.footer {
+  width: 85%;
+  position: absolute;
+  bottom: 10px;
+  text-align: center;
+  font-family: var(--font-family-default);
+  font-size: var(--font-size-footer);
+  font-weight: var(--font-weight-default);
+  color: var(--color-white);
+}
+
+.link {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-white);
+}
