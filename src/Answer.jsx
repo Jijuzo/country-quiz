@@ -5,7 +5,7 @@ const prefixes = ["A", "B", "C", "D"];
 
 export function Answer({
   index,
-  handleAnswerClick,
+  onClick,
   answered,
   answer,
   correctAnswerIndex,
@@ -26,7 +26,7 @@ export function Answer({
       <button
         type="button"
         className={buttonClass}
-        onClick={handleAnswerClick}
+        onClick={onClick}
         value={answer}
         disabled={answered}
       >

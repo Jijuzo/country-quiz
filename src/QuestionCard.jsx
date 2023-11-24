@@ -96,7 +96,7 @@ export function QuestionCard({
                 selectedAnswerIndex={selectedAnswerIndex}
                 correctAnswerIndex={answerChoices.indexOf(rightCountry)}
                 answered={selectedAnswerIndex !== null}
-                handleAnswerClick={(e) => {
+                onClick={(e) => {
                   handleAnswerClick(e, index);
                 }}
               />
