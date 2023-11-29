@@ -5,18 +5,13 @@ import { Footer } from "./Footer";
 import { QuizResults } from "./QuizResults";
 import { DotSpinner } from "@uiball/loaders";
 import { ErrorMessage } from "./ErrorMessage";
+import { AllCountries } from "./AllCountries";
 
 const BASE_URL = "https://restcountries.com";
 const QUESTION_DATA_URL = new URL(
   "/v3.1/all?fields=name,capital,flags",
   BASE_URL
 );
-
-export type AllCountries = Array<{
-  capital: string[];
-  name: { common: string };
-  flags: { png: string };
-}>;
 
 type CountriesDataAction =
   | { type: "success"; payload: { data: AllCountries } }
@@ -71,14 +66,14 @@ export const App = () => {
   });
 
   useEffect(() => {
-    const fetchQuestionData = async <T extends AllCountries>() => {
+    const fetchQuestionData = async () => {
       dispatch({ type: "loading" });
       try {
         const promise = await fetch(QUESTION_DATA_URL);
         if (!promise.ok) {
           throw new Error(`HTTP error! Status: ${promise.status}`);
         }
-        const result = (await promise.json()) as T;
+        const result = (await promise.json()) as AllCountries;
         dispatch({ type: "success", payload: { data: result } });
       } catch (error) {
         console.error("Error:", error);
@@ -89,7 +84,7 @@ export const App = () => {
       }
     };
 
-    fetchQuestionData<AllCountries>();
+    fetchQuestionData();
   }, []);
 
   return (
@@ -105,9 +100,13 @@ export const App = () => {
             {countriesState.data && !isQuizEnded && (
               <QuestionCard
                 quizScore={quizScore}
-                onCorrectAnswer={setQuizScore}
+                onCorrectAnswer={(value: number) => {
+                  setQuizScore(value);
+                }}
                 isQuizEnded={isQuizEnded}
-                onIncorrectAnswer={setIsQuizEnded}
+                onIncorrectAnswer={(value: boolean) => {
+                  setIsQuizEnded(value);
+                }}
                 allCountriesData={countriesState.data}
               />
             )}

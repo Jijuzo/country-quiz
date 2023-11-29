@@ -3,7 +3,7 @@ import { Answer } from "./Answer";
 import cardIconSvg from "./assets/undraw_adventure_4hum_1.svg";
 import { useMemo, useState } from "react";
 import "./QuestionCard.css";
-import { AllCountries } from "./App";
+import { AllCountries } from "./AllCountries";
 
 const CAPITAL_QUESTION_TYPE = 0;
 const FLAG_QUESTION_TYPE = 1;
@@ -43,8 +43,8 @@ const getQuestionData = (allCountriesData: AllCountries) => {
 
 type QuestionCardProps = {
   allCountriesData: AllCountries;
-  onCorrectAnswer: React.Dispatch<React.SetStateAction<number>>;
-  onIncorrectAnswer: React.Dispatch<React.SetStateAction<boolean>>;
+  onCorrectAnswer: (value: number) => void;
+  onIncorrectAnswer: (value: boolean) => void;
   quizScore: number;
   isQuizEnded: boolean;
 };
@@ -56,10 +56,10 @@ export function QuestionCard({
   isQuizEnded,
   allCountriesData,
 }: QuestionCardProps) {
+  const [questionType, setQuestionType] = useState(getQuestionType());
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(
     null
   );
-  const [questionType, setQuestionType] = useState(getQuestionType());
   const [answerChoices, setAnswerChoices] = useState(
     getQuestionData(allCountriesData)
   );
