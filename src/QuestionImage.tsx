@@ -1,4 +1,4 @@
-import { AllCountries } from "./App";
+import { AllCountries } from "./AllCountries";
 
 export function QuestionImage({ country }: { country: AllCountries[number] }) {
   return (
