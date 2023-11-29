@@ -5,7 +5,7 @@ import { Footer } from "./Footer";
 import { QuizResults } from "./QuizResults";
 import { DotSpinner } from "@uiball/loaders";
 import { ErrorMessage } from "./ErrorMessage";
-import { AllCountries } from "./AllCountries";
+import { AllCountries } from "./types";
 
 const BASE_URL = "https://restcountries.com";
 const QUESTION_DATA_URL = new URL(

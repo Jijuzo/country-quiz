@@ -3,7 +3,7 @@ import { Answer } from "./Answer";
 import cardIconSvg from "./assets/undraw_adventure_4hum_1.svg";
 import { useMemo, useState } from "react";
 import "./QuestionCard.css";
-import { AllCountries } from "./AllCountries";
+import { AllCountries } from "./types";
 
 const CAPITAL_QUESTION_TYPE = 0;
 const FLAG_QUESTION_TYPE = 1;

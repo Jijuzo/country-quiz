@@ -1,4 +1,4 @@
-import { AllCountries } from "./AllCountries";
+import { AllCountries } from "./types";
 
 export function QuestionImage({ country }: { country: AllCountries[number] }) {
   return (
