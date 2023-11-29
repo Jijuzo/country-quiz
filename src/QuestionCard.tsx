@@ -78,7 +78,7 @@ export function QuestionCard({
     }
   };
 
-  const handleFormSubmit = () => {
+  const handleOnClick = () => {
     if (selectedAnswerIndex !== answerChoices.indexOf(rightCountry)) {
       onIncorrectAnswer(true);
     } else if (!isQuizEnded) {
@@ -117,11 +117,7 @@ export function QuestionCard({
         </ul>
       </div>
       {selectedAnswerIndex !== null && (
-        <button
-          className="next-button"
-          type="submit"
-          onClick={handleFormSubmit}
-        >
+        <button className="next-button" type="submit" onClick={handleOnClick}>
           {selectedAnswerIndex === answerChoices.indexOf(rightCountry)
             ? "Next"
             : "Results"}
