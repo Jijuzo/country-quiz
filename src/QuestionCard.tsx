@@ -20,26 +20,15 @@ const getRandomIndex = (array: Array<unknown>) => {
   return Math.floor(Math.random() * array.length);
 };
 
-const getRandomCountry = (countries: AllCountries) => {
-  return countries[getRandomIndex(countries)];
-};
+function getQuestionData(allCountriesData: AllCountries) {
+  const countriesMap: Map<number, AllCountries[0]> = new Map();
 
-const getQuestionData = (allCountriesData: AllCountries) => {
-  const countriesArray: unknown[] = [];
-  for (let i = 0; i < 4; i++) {
-    let countryData;
-    do {
-      countryData = getRandomCountry(allCountriesData);
-    } while (
-      countriesArray.includes(countryData) ||
-      countryData.capital[0] === undefined ||
-      countryData.name.common === undefined ||
-      countryData.flags.png === undefined
-    );
-    countriesArray.push(countryData);
+  while (countriesMap.size < 4) {
+    const randomIndex = getRandomIndex(allCountriesData);
+    countriesMap.set(randomIndex, allCountriesData[randomIndex]);
   }
-  return countriesArray as AllCountries;
-};
+  return [...countriesMap.values()];
+}
 
 type QuestionCardProps = {
   allCountriesData: AllCountries;
