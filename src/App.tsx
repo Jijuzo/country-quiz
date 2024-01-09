@@ -74,7 +74,17 @@ export const App = () => {
           throw new Error(`HTTP error! Status: ${promise.status}`);
         }
         const result = (await promise.json()) as AllCountries;
-        dispatch({ type: "success", payload: { data: result } });
+        dispatch({
+          type: "success",
+          payload: {
+            data: result.filter(
+              (countryData) =>
+                countryData.capital[0] !== undefined &&
+                countryData.name.common !== undefined &&
+                countryData.flags.png !== undefined
+            ),
+          },
+        });
       } catch (error) {
         console.error("Error:", error);
         if (error instanceof Error)
