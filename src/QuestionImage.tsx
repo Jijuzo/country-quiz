@@ -1,6 +1,6 @@
-import { AllCountries } from "./types";
+import { Country } from "./types";
 
-export function QuestionImage({ country }: { country: AllCountries[number] }) {
+export function QuestionImage({ country }: { country: Country }) {
   return (
     <img
       className="question-flag"
