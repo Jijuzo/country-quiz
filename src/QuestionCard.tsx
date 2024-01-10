@@ -2,11 +2,12 @@ import { QuestionImage } from "./QuestionImage";
 import { Answer } from "./Answer";
 import cardIconSvg from "./assets/undraw_adventure_4hum_1.svg";
 import { useMemo, useState } from "react";
+import { AllCountries, Country } from "./types";
 import "./QuestionCard.css";
-import { AllCountries } from "./types";
 
 const CAPITAL_QUESTION_TYPE = 0;
 const FLAG_QUESTION_TYPE = 1;
+const ANSWER_OPTIONS_NUMBER = 4;
 
 const getQuestionType = () => {
   const randomNumber =
@@ -20,10 +21,10 @@ const getRandomIndex = (array: Array<unknown>) => {
   return Math.floor(Math.random() * array.length);
 };
 
-function getQuestionData(allCountriesData: AllCountries) {
-  const countriesMap: Map<number, AllCountries[0]> = new Map();
+function getAnswersData(allCountriesData: AllCountries) {
+  const countriesMap: Map<number, Country> = new Map();
 
-  while (countriesMap.size < 4) {
+  while (countriesMap.size < ANSWER_OPTIONS_NUMBER) {
     const randomIndex = getRandomIndex(allCountriesData);
     countriesMap.set(randomIndex, allCountriesData[randomIndex]);
   }
@@ -50,7 +51,7 @@ export function QuestionCard({
     null
   );
   const [answerChoices, setAnswerChoices] = useState(
-    getQuestionData(allCountriesData)
+    getAnswersData(allCountriesData)
   );
   const rightCountry = useMemo(
     () => answerChoices[getRandomIndex(answerChoices)],
@@ -72,7 +73,7 @@ export function QuestionCard({
       onIncorrectAnswer(true);
     } else if (!isQuizEnded) {
       setQuestionType(getQuestionType());
-      setAnswerChoices(getQuestionData(allCountriesData));
+      setAnswerChoices(getAnswersData(allCountriesData));
       setSelectedAnswerIndex(null);
     }
   };
