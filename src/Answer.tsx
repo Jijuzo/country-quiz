@@ -25,7 +25,7 @@ export function Answer({
   const buttonClass = classNames("answer-button", {
     "correct-answer": answered && isCorrect,
     "incorrect-answer": isSelected && !isCorrect,
-    "long-answer": answer.length > 30,
+    "long-answer": answer.length > 25,
     "cursor-before-answer": !answered,
     "cursor-after-answer": answered,
   });
