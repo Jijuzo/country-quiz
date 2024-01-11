@@ -1,6 +1,6 @@
 # Country Quiz App
 
-<span style="color:grey">jijuzoscountryquiz.vercel.app</span>
+<a href="https://jijuzoscountryquiz.vercel.app">Live Demo</a>
 
 Fun and simple web application built with React, Vite, and TypeScript that allows users to test their knowledge of countries around the world. Test your geography skills by answering questions about different countries.
 
