@@ -3,6 +3,15 @@ import classNames from "classnames";
 
 const prefixes = ["A", "B", "C", "D"];
 
+type AnswerProps = {
+  index: number;
+  correctAnswerIndex: number;
+  onClick: (e: React.MouseEvent<HTMLElement>, index: number) => void;
+  answered: boolean;
+  answer: string;
+  selectedAnswerIndex: number;
+};
+
 export function Answer({
   index,
   onClick,
@@ -10,7 +19,7 @@ export function Answer({
   answer,
   correctAnswerIndex,
   selectedAnswerIndex,
-}) {
+}: AnswerProps) {
   const isSelected = index === selectedAnswerIndex;
   const isCorrect = index === correctAnswerIndex;
   const buttonClass = classNames("answer-button", {
@@ -26,7 +35,7 @@ export function Answer({
       <button
         type="button"
         className={buttonClass}
-        onClick={onClick}
+        onClick={(e: React.MouseEvent<HTMLButtonElement>) => onClick(e, index)}
         value={answer}
         disabled={answered}
       >

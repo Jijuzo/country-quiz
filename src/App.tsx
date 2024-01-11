@@ -5,6 +5,7 @@ import { Footer } from "./Footer";
 import { QuizResults } from "./QuizResults";
 import { DotSpinner } from "@uiball/loaders";
 import { ErrorMessage } from "./ErrorMessage";
+import { AllCountries } from "./types";
 
 const BASE_URL = "https://restcountries.com";
 const QUESTION_DATA_URL = new URL(
@@ -12,7 +13,22 @@ const QUESTION_DATA_URL = new URL(
   BASE_URL
 );
 
-const countriesReducer = (state, action) => {
+type CountriesDataAction =
+  | { type: "success"; payload: { data: AllCountries } }
+  | { type: "error"; payload: { error: Error } }
+  | { type: "loading" }
+  | { type: "idle" };
+
+type CountriesDataState = {
+  data: AllCountries | null;
+  error: Error | null;
+  isLoading: boolean;
+};
+
+const countriesReducer = (
+  state: CountriesDataState,
+  action: CountriesDataAction
+) => {
   switch (action.type) {
     case "success":
       return {
@@ -57,11 +73,22 @@ export const App = () => {
         if (!promise.ok) {
           throw new Error(`HTTP error! Status: ${promise.status}`);
         }
-        const result = await promise.json();
-        dispatch({ type: "success", payload: { data: result } });
+        const result = (await promise.json()) as AllCountries;
+        dispatch({
+          type: "success",
+          payload: {
+            data: result.filter(
+              (countryData) =>
+                countryData.capital[0] !== undefined &&
+                countryData.name.common !== undefined &&
+                countryData.flags.png !== undefined
+            ),
+          },
+        });
       } catch (error) {
         console.error("Error:", error);
-        dispatch({ type: "error", payload: { error } });
+        if (error instanceof Error)
+          dispatch({ type: "error", payload: { error } });
       } finally {
         dispatch({ type: "idle" });
       }
@@ -83,9 +110,13 @@ export const App = () => {
             {countriesState.data && !isQuizEnded && (
               <QuestionCard
                 quizScore={quizScore}
-                onCorrectAnswer={setQuizScore}
+                onCorrectAnswer={(value: number) => {
+                  setQuizScore(value);
+                }}
                 isQuizEnded={isQuizEnded}
-                onIncorrectAnswer={setIsQuizEnded}
+                onIncorrectAnswer={(value: boolean) => {
+                  setIsQuizEnded(value);
+                }}
                 allCountriesData={countriesState.data}
               />
             )}
@@ -101,12 +132,12 @@ export const App = () => {
           </form>
         </div>
       )}
-      <ErrorMessage error={countriesState.error} />
+      <ErrorMessage error={countriesState.error as Error} />
       <Footer />
     </main>
   );
 };
 
-const container = document.getElementById("root");
+const container = document.getElementById("root") as HTMLElement;
 const root = createRoot(container);
 root.render(<App />);

@@ -2,10 +2,12 @@ import { QuestionImage } from "./QuestionImage";
 import { Answer } from "./Answer";
 import cardIconSvg from "./assets/undraw_adventure_4hum_1.svg";
 import { useMemo, useState } from "react";
+import { AllCountries, Country } from "./types";
 import "./QuestionCard.css";
 
 const CAPITAL_QUESTION_TYPE = 0;
 const FLAG_QUESTION_TYPE = 1;
+const ANSWER_OPTIONS_NUMBER = 4;
 
 const getQuestionType = () => {
   const randomNumber =
@@ -15,29 +17,26 @@ const getQuestionType = () => {
   return randomNumber;
 };
 
-const getRandomIndex = (array) => {
+const getRandomIndex = (array: Array<unknown>) => {
   return Math.floor(Math.random() * array.length);
 };
 
-const getRandomCountry = (countries) => {
-  return countries[getRandomIndex(countries)];
-};
+function getAnswersData(allCountriesData: AllCountries) {
+  const countriesMap: Map<number, Country> = new Map();
 
-const getQuestionData = (allCountriesData) => {
-  const countriesArray = [];
-  for (let i = 0; i < 4; i++) {
-    let countryData;
-    do {
-      countryData = getRandomCountry(allCountriesData);
-    } while (
-      countriesArray.includes(countryData) ||
-      countryData.capital[0] === undefined ||
-      countryData.name.common === undefined ||
-      countryData.flags.png === undefined
-    );
-    countriesArray.push(countryData);
+  while (countriesMap.size < ANSWER_OPTIONS_NUMBER) {
+    const randomIndex = getRandomIndex(allCountriesData);
+    countriesMap.set(randomIndex, allCountriesData[randomIndex]);
   }
-  return countriesArray;
+  return [...countriesMap.values()];
+}
+
+type QuestionCardProps = {
+  allCountriesData: AllCountries;
+  onCorrectAnswer: (value: number) => void;
+  onIncorrectAnswer: (value: boolean) => void;
+  quizScore: number;
+  isQuizEnded: boolean;
 };
 
 export function QuestionCard({
@@ -46,30 +45,35 @@ export function QuestionCard({
   onIncorrectAnswer,
   isQuizEnded,
   allCountriesData,
-}) {
-  const [selectedAnswerIndex, setSelectedAnswerIndex] = useState(null);
+}: QuestionCardProps) {
   const [questionType, setQuestionType] = useState(getQuestionType());
+  const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(
+    null
+  );
   const [answerChoices, setAnswerChoices] = useState(
-    getQuestionData(allCountriesData)
+    getAnswersData(allCountriesData)
   );
   const rightCountry = useMemo(
     () => answerChoices[getRandomIndex(answerChoices)],
     [answerChoices]
   );
 
-  const handleAnswerClick = (e, index) => {
+  const handleAnswerClick = (
+    e: React.MouseEvent<HTMLElement>,
+    index: number
+  ) => {
     setSelectedAnswerIndex(index);
-    if (e.target.value === rightCountry.name.common) {
+    if ((e.target as HTMLInputElement).value === rightCountry.name.common) {
       onCorrectAnswer(quizScore + 1);
     }
   };
 
-  const handleFormSubmit = () => {
+  const handleOnClick = () => {
     if (selectedAnswerIndex !== answerChoices.indexOf(rightCountry)) {
       onIncorrectAnswer(true);
     } else if (!isQuizEnded) {
       setQuestionType(getQuestionType());
-      setAnswerChoices(getQuestionData(allCountriesData));
+      setAnswerChoices(getAnswersData(allCountriesData));
       setSelectedAnswerIndex(null);
     }
   };
@@ -93,23 +97,17 @@ export function QuestionCard({
                 key={index}
                 answer={answer.name.common}
                 index={index}
-                selectedAnswerIndex={selectedAnswerIndex}
+                selectedAnswerIndex={selectedAnswerIndex as number}
                 correctAnswerIndex={answerChoices.indexOf(rightCountry)}
                 answered={selectedAnswerIndex !== null}
-                onClick={(e) => {
-                  handleAnswerClick(e, index);
-                }}
+                onClick={handleAnswerClick}
               />
             );
           })}
         </ul>
       </div>
       {selectedAnswerIndex !== null && (
-        <button
-          className="next-button"
-          type="submit"
-          onClick={handleFormSubmit}
-        >
+        <button className="next-button" type="submit" onClick={handleOnClick}>
           {selectedAnswerIndex === answerChoices.indexOf(rightCountry)
             ? "Next"
             : "Results"}
